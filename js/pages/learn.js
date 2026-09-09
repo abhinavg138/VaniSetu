@@ -34,7 +34,7 @@ export async function renderLearn(container) {
                                 <button id="add-vocab-modal-btn" class="btn-primary" style="padding: 10px 18px; font-size: 0.85rem;">
                                     ${icons.plus} Add Concept Word
                                 </button>
-                                <a href="#/assessment" class="role-btn" style="padding: 10px 18px; font-size: 0.85rem; background: white;">
+                                <a href="#/assessment" class="role-btn" style="padding: 10px 18px; font-size: 0.85rem;">
                                     ${icons.clipboard} Create Assessment
                                 </a>
                             </div>
@@ -62,7 +62,7 @@ export async function renderLearn(container) {
 
                             <div style="display: flex; align-items: center; gap: 8px;">
                                 <span style="font-size: 0.75rem; font-weight: 700; color: var(--color-text-muted);">FILTER CLASS:</span>
-                                <div style="display: flex; background: white; border: 1px solid var(--color-border); border-radius: var(--radius-full); padding: 2px;">
+                                <div style="display: flex; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-full); padding: 2px;">
                                     ${['Class 3', 'Class 4', 'Class 5'].map(c => `
                                         <button class="class-filter-pill ${activeClass === c ? 'active' : ''}" data-cls="${c}" style="padding: 4px 12px; font-size: 0.75rem; font-weight: 700; border-radius: var(--radius-full); ${activeClass === c ? 'background: var(--color-primary); color: white;' : 'color: var(--color-text-muted);'}">
                                             ${c}
@@ -78,7 +78,7 @@ export async function renderLearn(container) {
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
                                 <div style="display: flex; gap: 8px;">
                                     ${['All', 'Science', 'Mathematics', 'Environment', 'Biology', 'Astronomy'].map(sub => `
-                                        <button class="sub-filter-btn" data-sub="${sub}" style="padding: 6px 14px; font-size: 0.75rem; font-weight: 600; border-radius: 99px; border: 1px solid ${currentFilterSubject === sub ? 'var(--color-primary)' : 'var(--color-border)'}; background: ${currentFilterSubject === sub ? 'var(--color-primary-light)' : 'white'}; color: ${currentFilterSubject === sub ? 'var(--color-primary)' : 'var(--color-text-muted)'};">
+                                        <button class="sub-filter-btn" data-sub="${sub}" style="padding: 6px 14px; font-size: 0.75rem; font-weight: 600; border-radius: 99px; border: 1px solid ${currentFilterSubject === sub ? 'var(--color-primary)' : 'var(--color-border)'}; background: ${currentFilterSubject === sub ? 'var(--color-primary-light)' : 'var(--color-surface)'}; color: ${currentFilterSubject === sub ? 'var(--color-primary)' : 'var(--color-text-muted)'};">
                                             ${sub}
                                         </button>
                                     `).join('')}
@@ -153,7 +153,7 @@ export async function renderLearn(container) {
                                             ${lp.summary}
                                         </p>
 
-                                        <div style="background: #f8fafc; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 16px;">
+                                        <div style="background: var(--color-surface-alt); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 16px;">
                                             <h4 style="font-size: 0.75rem; font-weight: 700; color: var(--color-text-muted); text-transform: uppercase; margin-bottom: 10px;">Recommended Classroom Steps:</h4>
                                             <ul style="display: flex; flex-direction: column; gap: 8px;">
                                                 ${lp.steps.map((step, idx) => `
@@ -185,7 +185,7 @@ export async function renderLearn(container) {
                                             </p>
                                         </div>
                                         <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--color-border); padding-top: 14px;">
-                                            <button class="preview-ws-btn" data-title="${ws.title}" style="padding: 8px 14px; background: white; border: 1px solid var(--color-border); border-radius: 6px; font-size: 0.8rem; font-weight: 600;">
+                                            <button class="preview-ws-btn role-btn" data-title="${ws.title}" style="padding: 8px 14px; font-size: 0.8rem; font-weight: 600;">
                                                 Preview Sheet
                                             </button>
                                             <a href="#/assessment" class="btn-primary" style="padding: 8px 16px; font-size: 0.8rem;">
@@ -276,7 +276,7 @@ function openAddWordModal(activeClass, onSuccess) {
                         </div>
                         <h3 style="font-weight: 700; font-size: 1.15rem;">Add Concept Word for ${activeClass}</h3>
                     </div>
-                    <button id="close-add-word" style="width: 32px; height: 32px; border-radius: 50%; background: #f1f5f9; display: flex; align-items: center; justify-content: center;">✕</button>
+                    <button id="close-add-word" style="width: 32px; height: 32px; border-radius: 50%; background: var(--color-surface-alt); color: var(--color-text-main); border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center; cursor: pointer;">✕</button>
                 </div>
 
                 <form id="add-word-form" class="flex flex-col gap-4">
@@ -350,9 +350,9 @@ function openWorksheetPreviewModal(title) {
             <div class="modal-box" style="max-width: 600px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--color-border);">
                     <h3 style="font-weight: 800; font-size: 1.2rem;">${title}</h3>
-                    <button id="close-ws-preview" style="width: 32px; height: 32px; border-radius: 50%; background: #f1f5f9; display: flex; align-items: center; justify-content: center;">✕</button>
+                    <button id="close-ws-preview" style="width: 32px; height: 32px; border-radius: 50%; background: var(--color-surface-alt); color: var(--color-text-main); border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center; cursor: pointer;">✕</button>
                 </div>
-                <div style="background: #fafaf9; border: 2px dashed var(--color-border); border-radius: var(--radius-md); padding: 24px; text-align: center;">
+                <div style="background: var(--color-surface-alt); border: 2px dashed var(--color-border); border-radius: var(--radius-md); padding: 24px; text-align: center;">
                     <div style="font-size: 2rem; margin-bottom: 8px;">📄</div>
                     <h4 style="font-weight: 700; margin-bottom: 4px;">Printable Bilingual Worksheet</h4>
                     <p style="font-size: 0.85rem; color: var(--color-text-muted); max-width: 400px; margin: 0 auto 16px;">

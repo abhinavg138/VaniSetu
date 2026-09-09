@@ -67,7 +67,7 @@ export async function renderStudents(container) {
 
                                 <div style="display: flex; align-items: center; gap: 8px;">
                                     <span style="font-size: 0.75rem; font-weight: 700; color: var(--color-text-muted);">MOTHER TONGUE:</span>
-                                    <select id="language-filter-select" style="padding: 8px 14px; border: 1px solid var(--color-border); border-radius: var(--radius-md); font-size: 0.8rem; font-weight: 600; background: white;">
+                                    <select id="language-filter-select" style="padding: 8px 14px; border: 1px solid var(--color-border); border-radius: var(--radius-md); font-size: 0.8rem; font-weight: 600; background: var(--color-surface); color: var(--color-text-main); cursor: pointer;">
                                         <option value="All" ${langFilter === 'All' ? 'selected' : ''}>All Languages</option>
                                         <option value="Santhali" ${langFilter === 'Santhali' ? 'selected' : ''}>Santhali (संथाली)</option>
                                         <option value="Bengali" ${langFilter === 'Bengali' ? 'selected' : ''}>Bengali (বাংলা)</option>
@@ -122,10 +122,10 @@ export async function renderStudents(container) {
                                             </td>
                                             <td>
                                                 <div style="display: flex; align-items: center; gap: 8px;">
-                                                    <div style="flex: 1; height: 8px; background: #e2e8f0; border-radius: 4px; min-width: 65px; overflow: hidden;">
+                                                    <div style="flex: 1; height: 8px; background: var(--color-border); border-radius: 4px; min-width: 65px; overflow: hidden;">
                                                         <div style="height: 100%; width: ${s.comprehensionIndex}%; background: ${s.comprehensionIndex >= 85 ? '#059669' : (s.comprehensionIndex >= 75 ? '#0284c7' : '#d97706')};"></div>
                                                     </div>
-                                                    <span style="font-weight: 800; font-size: 0.8rem; color: ${s.comprehensionIndex >= 85 ? '#059669' : '#0f172a'};">
+                                                    <span style="font-weight: 800; font-size: 0.8rem; color: ${s.comprehensionIndex >= 85 ? '#10b981' : 'var(--color-text-main)'};">
                                                         ${s.comprehensionIndex}%
                                                     </span>
                                                 </div>
@@ -225,7 +225,7 @@ function openEnrollModal(defaultClass, onSuccess) {
             <div class="modal-box" style="max-width: 480px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--color-border);">
                     <h3 style="font-weight: 700; font-size: 1.15rem;">Enroll Learner in ${defaultClass}</h3>
-                    <button id="close-enroll" style="width: 32px; height: 32px; border-radius: 50%; background: #f1f5f9; display: flex; align-items: center; justify-content: center;">✕</button>
+                    <button id="close-enroll" style="width: 32px; height: 32px; border-radius: 50%; background: var(--color-surface-alt); color: var(--color-text-main); border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center; cursor: pointer;">✕</button>
                 </div>
 
                 <form id="enroll-form" class="flex flex-col gap-4">
@@ -303,7 +303,7 @@ function openStudentDetailModal(student) {
                             <p style="font-size: 0.8rem; color: var(--color-text-muted);">Roll #${student.roll} · ${student.class} · Native Language: <strong>${student.motherTongue}</strong></p>
                         </div>
                     </div>
-                    <button id="close-student-detail" style="width: 32px; height: 32px; border-radius: 50%; background: #f1f5f9; display: flex; align-items: center; justify-content: center;">✕</button>
+                    <button id="close-student-detail" style="width: 32px; height: 32px; border-radius: 50%; background: var(--color-surface-alt); color: var(--color-text-main); border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center; cursor: pointer;">✕</button>
                 </div>
 
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px;">
@@ -321,9 +321,9 @@ function openStudentDetailModal(student) {
                     </div>
                 </div>
 
-                <div style="background: #fdfaf4; border: 1px solid #fde68a; border-radius: var(--radius-md); padding: 16px; margin-bottom: 20px;">
-                    <h4 style="font-size: 0.85rem; font-weight: 700; color: #b45309; margin-bottom: 6px;">✦ Recommended Vernacular Bridge Actions</h4>
-                    <p style="font-size: 0.8rem; color: #78350f; line-height: 1.4;">
+                <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: var(--radius-md); padding: 16px; margin-bottom: 20px;">
+                    <h4 style="font-size: 0.85rem; font-weight: 700; color: #d97706; margin-bottom: 6px;">✦ Recommended Vernacular Bridge Actions</h4>
+                    <p style="font-size: 0.8rem; color: var(--color-text-main); line-height: 1.4;">
                         ${student.name} responds with higher accuracy when story math problems are explained using <strong>${student.motherTongue} Ol Chiki vocabulary</strong>. Provide audio prompts during upcoming quizzes.
                     </p>
                 </div>

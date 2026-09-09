@@ -127,7 +127,7 @@ export async function renderDashboard(container) {
                                     ${stats.subjects.map(subj => `
                                         <div style="display: flex; align-items: center; gap: 12px; font-size: 0.75rem;">
                                             <span style="font-weight: 600; width: 60px; color: var(--color-text-muted);">${subj.name}</span>
-                                            <div style="flex: 1; height: 8px; background: rgba(0,0,0,0.05); border-radius: 4px; overflow: hidden;">
+                                            <div style="flex: 1; height: 8px; background: var(--color-border); border-radius: 4px; overflow: hidden;">
                                                 <div style="height: 100%; width: ${subj.value}%; background: ${subj.color}; border-radius: 4px;"></div>
                                             </div>
                                             <span style="font-weight: 700; width: 28px; text-align: right;">${subj.value}%</span>
@@ -173,7 +173,7 @@ function openQuickLessonModal(activeClass, onSuccess) {
             <div class="modal-box" style="max-width: 460px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--color-border);">
                     <h3 style="font-weight: 700; font-size: 1.15rem;">Schedule Lesson for ${activeClass}</h3>
-                    <button id="close-quick-lesson" style="width: 32px; height: 32px; border-radius: 50%; background: #f1f5f9; display: flex; align-items: center; justify-content: center;">✕</button>
+                    <button id="close-quick-lesson" style="width: 32px; height: 32px; border-radius: 50%; background: var(--color-surface-alt); color: var(--color-text-main); border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center; cursor: pointer;">✕</button>
                 </div>
 
                 <form id="quick-lesson-form" class="flex flex-col gap-4">

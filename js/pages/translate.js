@@ -56,13 +56,13 @@ export async function renderTranslate(container) {
                         </div>
 
                         <!-- Language Selector Toolbar -->
-                        <div class="card" style="padding: 12px 20px; margin-bottom: 20px; background: white; border: 1.5px solid var(--color-border); border-radius: var(--radius-lg);">
+                        <div class="card" style="padding: 12px 18px; margin-bottom: 20px; border-radius: var(--radius-lg);">
                             <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;">
                                 <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
                                     <!-- Source Language -->
                                     <div style="display: flex; align-items: center; gap: 6px;">
                                         <span style="font-size: 0.75rem; font-weight: 700; color: var(--color-text-muted); text-transform: uppercase;">From:</span>
-                                        <select id="live-source-lang" style="padding: 6px 12px; border-radius: 8px; border: 1.5px solid var(--color-border); font-size: 0.85rem; font-weight: 700; background: #fafaf9; cursor: pointer;">
+                                        <select id="live-source-lang" style="padding: 6px 12px; border-radius: 8px; border: 1px solid var(--color-border); font-size: 0.85rem; font-weight: 600; background: var(--color-surface-alt); color: var(--color-text-main); cursor: pointer;">
                                             <option value="Hindi" ${sourceLang === 'Hindi' ? 'selected' : ''}>Hindi (हिंदी)</option>
                                             <option value="English" ${sourceLang === 'English' ? 'selected' : ''}>English</option>
                                             <option value="Bengali" ${sourceLang === 'Bengali' ? 'selected' : ''}>Bengali (বাংলা)</option>
@@ -72,14 +72,14 @@ export async function renderTranslate(container) {
                                     </div>
 
                                     <!-- Swap Languages Button -->
-                                    <button id="live-swap-lang-btn" class="role-btn" style="padding: 6px 10px; border-radius: 8px; font-size: 0.95rem; font-weight: 700; display: flex; align-items: center; justify-content: center; background: #f4f4f5;" title="Swap source and target languages">
+                                    <button id="live-swap-lang-btn" class="role-btn" style="padding: 6px 10px; border-radius: 8px; font-size: 0.95rem; font-weight: 700; display: flex; align-items: center; justify-content: center; background: var(--color-surface-alt); color: var(--color-text-main);" title="Swap source and target languages">
                                         ⇄
                                     </button>
 
                                     <!-- Target Language -->
                                     <div style="display: flex; align-items: center; gap: 6px;">
                                         <span style="font-size: 0.75rem; font-weight: 700; color: var(--color-text-muted); text-transform: uppercase;">To:</span>
-                                        <select id="live-target-lang" style="padding: 6px 12px; border-radius: 8px; border: 1.5px solid var(--color-primary); font-size: 0.85rem; font-weight: 700; background: #fff7ed; color: var(--color-primary); cursor: pointer;">
+                                        <select id="live-target-lang" style="padding: 6px 12px; border-radius: 8px; border: 1.5px solid var(--color-primary); font-size: 0.85rem; font-weight: 700; background: var(--color-primary-light); color: var(--color-primary); cursor: pointer;">
                                             <option value="Santhali (Ol Chiki & Roman)" ${targetLang.includes('Santhali') ? 'selected' : ''}>Santhali (Ol Chiki & Roman)</option>
                                             <option value="Hindi (हिंदी)" ${targetLang.includes('Hindi') ? 'selected' : ''}>Hindi (हिंदी)</option>
                                             <option value="Bengali (বাংলা)" ${targetLang.includes('Bengali') ? 'selected' : ''}>Bengali (বাংলা)</option>
@@ -93,7 +93,7 @@ export async function renderTranslate(container) {
                                 <!-- Grade Simplification Level -->
                                 <div style="display: flex; align-items: center; gap: 8px;">
                                     <span style="font-size: 0.75rem; font-weight: 700; color: var(--color-text-muted);">Grade Level:</span>
-                                    <select id="live-level-select" style="padding: 6px 10px; border-radius: 8px; border: 1.5px solid var(--color-border); font-size: 0.8rem; font-weight: 600; background: white; cursor: pointer;">
+                                    <select id="live-level-select" style="padding: 6px 10px; border-radius: 8px; border: 1px solid var(--color-border); font-size: 0.8rem; font-weight: 600; background: var(--color-surface-alt); color: var(--color-text-main); cursor: pointer;">
                                         <option value="Class 3" ${simplifyLevel === 'Class 3' ? 'selected' : ''}>Class 3 Vocabulary</option>
                                         <option value="Class 4" ${simplifyLevel === 'Class 4' ? 'selected' : ''}>Class 4 Vocabulary</option>
                                         <option value="Class 5" ${simplifyLevel === 'Class 5' ? 'selected' : ''}>Class 5 Vocabulary</option>
@@ -106,7 +106,7 @@ export async function renderTranslate(container) {
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
                             
                             <!-- Left Panel: Input & Speech -->
-                            <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; padding: 20px; border: 1.5px solid var(--color-border); min-height: 320px;">
+                            <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; padding: 20px; min-height: 320px;">
                                 <div>
                                     <!-- Input Header -->
                                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
@@ -114,8 +114,8 @@ export async function renderTranslate(container) {
                                             <span style="font-size: 0.75rem; font-weight: 700; color: var(--color-text-muted); text-transform: uppercase;">
                                                 Source Input
                                             </span>
-                                            <span id="live-listening-indicator" style="display: none; align-items: center; gap: 6px; font-size: 0.72rem; font-weight: 700; color: #dc2626; background: #fee2e2; padding: 2px 8px; border-radius: 99px;">
-                                                <span style="width: 6px; height: 6px; border-radius: 50%; background: #dc2626; animation: pulse 0.8s infinite;"></span>
+                                            <span id="live-listening-indicator" style="display: none; align-items: center; gap: 6px; font-size: 0.72rem; font-weight: 700; color: #ef4444; background: rgba(239, 68, 68, 0.15); padding: 2px 8px; border-radius: 99px;">
+                                                <span style="width: 6px; height: 6px; border-radius: 50%; background: #ef4444; animation: pulse 0.8s infinite;"></span>
                                                 Listening Live
                                             </span>
                                         </div>
@@ -125,14 +125,14 @@ export async function renderTranslate(container) {
                                     </div>
 
                                     <!-- Live Text Input Area -->
-                                    <textarea id="live-input-text" class="input-field" rows="6" placeholder="Type here or tap the microphone below to speak live..." style="font-size: 1rem; line-height: 1.6; resize: vertical; border: 1px solid var(--color-border); padding: 12px; border-radius: var(--radius-md); width: 100%; box-sizing: border-box;">पेड़ों के पत्ते धूप और पानी की मदद से अपना भोजन बनाते हैं, जिसे प्रकाश संश्लेषण कहते हैं।</textarea>
+                                    <textarea id="live-input-text" class="input-field" rows="6" placeholder="Type here or tap the microphone below to speak live..." style="font-size: 1rem; line-height: 1.6; resize: vertical; padding: 12px; border-radius: var(--radius-md); width: 100%; box-sizing: border-box;">पेड़ों के पत्ते धूप और पानी की मदद से अपना भोजन बनाते हैं, जिसे प्रकाश संश्लेषण कहते हैं।</textarea>
                                 </div>
 
                                 <!-- Bottom Controls of Left Panel -->
                                 <div>
                                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--color-border);">
                                         <!-- Mic Voice Toggle -->
-                                        <button id="live-mic-btn" class="role-btn" style="padding: 8px 14px; font-size: 0.8rem; font-weight: 700; border-radius: 8px; display: flex; align-items: center; gap: 8px; background: #fff1f2; color: #e11d48; border-color: #fecdd3; cursor: pointer; transition: all 0.2s;">
+                                        <button id="live-mic-btn" class="role-btn" style="padding: 8px 14px; font-size: 0.8rem; font-weight: 700; border-radius: 8px; display: flex; align-items: center; gap: 8px; background: rgba(244, 63, 94, 0.1); color: #f43f5e; border-color: rgba(244, 63, 94, 0.25); cursor: pointer; transition: all 0.2s;">
                                             <span id="live-mic-icon">${icons.mic}</span>
                                             <span id="live-mic-label">Speak (Voice Input)</span>
                                         </button>
@@ -145,16 +145,16 @@ export async function renderTranslate(container) {
                                     <!-- Quick Classroom Prompts -->
                                     <div style="margin-top: 12px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center;">
                                         <span style="font-size: 0.68rem; font-weight: 700; color: var(--color-text-muted); text-transform: uppercase;">Quick Topics:</span>
-                                        <button class="live-prompt-chip" data-text="पेड़ों के पत्ते धूप और पानी से अपना भोजन बनाते हैं, जिसे प्रकाश संश्लेषण कहते हैं।" style="font-size: 0.72rem; padding: 3px 8px; background: #f8fafc; border: 1px solid var(--color-border); border-radius: 6px; cursor: pointer;">🌿 Photosynthesis</button>
-                                        <button class="live-prompt-chip" data-text="अगर हमारे पास १२ आम हैं और ५ बच्चों में बांट दिए तो ७ शेष बचेंगे।" style="font-size: 0.72rem; padding: 3px 8px; background: #f8fafc; border: 1px solid var(--color-border); border-radius: 6px; cursor: pointer;">🔢 Subtraction</button>
-                                        <button class="live-prompt-chip" data-text="सभी बच्चे अपनी गणित की स्लेट और चॉक निकालें।" style="font-size: 0.72rem; padding: 3px 8px; background: #f8fafc; border: 1px solid var(--color-border); border-radius: 6px; cursor: pointer;">📚 Slate & Chalk</button>
-                                        <button class="live-prompt-chip" data-text="हाथों को साबुन से अच्छी तरह धोकर ही भोजन करना चाहिए।" style="font-size: 0.72rem; padding: 3px 8px; background: #f8fafc; border: 1px solid var(--color-border); border-radius: 6px; cursor: pointer;">🧼 Handwashing</button>
+                                        <button class="live-prompt-chip" data-text="पेड़ों के पत्ते धूप और पानी से अपना भोजन बनाते हैं, जिसे प्रकाश संश्लेषण कहते हैं;">🌿 Photosynthesis</button>
+                                        <button class="live-prompt-chip" data-text="अगर हमारे पास १२ आम हैं और ५ बच्चों में बांट दिए तो ७ शेष बचेंगे;">🔢 Subtraction</button>
+                                        <button class="live-prompt-chip" data-text="सभी बच्चे अपनी गणित की स्लेट और चॉक निकालें;">📚 Slate & Chalk</button>
+                                        <button class="live-prompt-chip" data-text="हाथों को साबुन से अच्छी तरह धोकर ही भोजन करना चाहिए;">🧼 Handwashing</button>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Right Panel: Live Vernacular Translation Output -->
-                            <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; padding: 20px; background: #fafaf9; border: 1.5px solid #e7e5e4; min-height: 320px;">
+                            <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; padding: 20px; min-height: 320px;">
                                 <div>
                                     <!-- Output Header -->
                                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
@@ -166,14 +166,14 @@ export async function renderTranslate(container) {
                                                 Santhali
                                             </span>
                                         </div>
-                                        <div id="live-status-indicator" style="font-size: 0.72rem; font-weight: 600; color: #15803d; display: flex; align-items: center; gap: 4px;">
-                                            <span style="width: 6px; height: 6px; border-radius: 50%; background: #16a34a;"></span>
+                                        <div id="live-status-indicator" style="font-size: 0.72rem; font-weight: 600; color: #10b981; display: flex; align-items: center; gap: 4px;">
+                                            <span style="width: 6px; height: 6px; border-radius: 50%; background: #10b981;"></span>
                                             <span>Live Translated</span>
                                         </div>
                                     </div>
 
                                     <!-- Translated Content Box -->
-                                    <div id="live-output-container" style="background: white; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 16px; min-height: 140px;">
+                                    <div id="live-output-container" style="background: var(--color-surface-alt); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 16px; min-height: 140px;">
                                         <div id="live-output-text" style="font-size: 1.15rem; font-weight: 700; line-height: 1.6; color: var(--color-text-main);">
                                             ᱫᱟᱨᱮ ᱥᱟᱠᱟᱢ ᱪᱟᱸᱫᱚ ᱢᱟᱨᱥᱟᱞ ᱠᱷᱚᱱ ᱡᱚᱢᱟᱜ ᱮ ᱛᱮᱭᱟᱨ-ᱟ (Dare sakam chando marsal khon aakowak jomak ko toiri-a).
                                         </div>
@@ -188,13 +188,13 @@ export async function renderTranslate(container) {
                                     <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--color-border);">
                                         <div style="display: flex; align-items: center; gap: 8px;">
                                             <!-- Listen (TTS) Button -->
-                                            <button id="live-listen-btn" class="role-btn" style="padding: 7px 14px; font-size: 0.8rem; font-weight: 700; background: #f0fdf4; border-color: #86efac; color: #15803d; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                                            <button id="live-listen-btn" class="role-btn" style="padding: 7px 14px; font-size: 0.8rem; font-weight: 700; background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.35); color: #10b981; display: flex; align-items: center; gap: 6px; cursor: pointer;">
                                                 <span id="live-listen-icon">${icons.volume}</span>
                                                 <span id="live-listen-label">Listen (TTS)</span>
                                             </button>
 
                                             <!-- Speed Toggle -->
-                                            <select id="live-speech-rate" style="padding: 5px 8px; border-radius: 6px; border: 1px solid var(--color-border); font-size: 0.75rem; background: white; cursor: pointer;" title="Audio Playback Speed">
+                                            <select id="live-speech-rate" style="padding: 5px 8px; border-radius: 6px; border: 1px solid var(--color-border); font-size: 0.75rem; background: var(--color-surface-alt); color: var(--color-text-main); cursor: pointer;" title="Audio Playback Speed">
                                                 <option value="0.8">0.8x (Gentle)</option>
                                                 <option value="0.9" selected>0.9x (Standard)</option>
                                                 <option value="1.0">1.0x (Normal)</option>
@@ -213,21 +213,21 @@ export async function renderTranslate(container) {
                                             Key Vocabulary Elements:
                                         </div>
                                         <div id="live-vocab-pills" style="display: flex; flex-wrap: wrap; gap: 6px;">
-                                            <span class="badge" style="background: white; border: 1px solid var(--color-border); font-size: 0.75rem; padding: 4px 8px; display: inline-flex; align-items: center; gap: 6px;">
+                                            <span class="badge" style="background: var(--color-surface-alt); color: var(--color-text-main); border: 1px solid var(--color-border); font-size: 0.75rem; padding: 4px 8px; display: inline-flex; align-items: center; gap: 6px;">
                                                 <strong>Dare (ᱫᱟᱨᱮ)</strong> = Tree
-                                                <button class="word-mini-tts" data-word="Dare, Tree" style="background:none;border:none;cursor:pointer;color:#16a34a;padding:0;" title="Listen word">${icons.volume}</button>
+                                                <button class="word-mini-tts" data-word="Dare, Tree" style="background:none;border:none;cursor:pointer;color:#10b981;padding:0;" title="Listen word">${icons.volume}</button>
                                             </span>
-                                            <span class="badge" style="background: white; border: 1px solid var(--color-border); font-size: 0.75rem; padding: 4px 8px; display: inline-flex; align-items: center; gap: 6px;">
+                                            <span class="badge" style="background: var(--color-surface-alt); color: var(--color-text-main); border: 1px solid var(--color-border); font-size: 0.75rem; padding: 4px 8px; display: inline-flex; align-items: center; gap: 6px;">
                                                 <strong>Sakam (ᱥᱟᱠᱟᱢ)</strong> = Leaves
-                                                <button class="word-mini-tts" data-word="Sakam, Leaves" style="background:none;border:none;cursor:pointer;color:#16a34a;padding:0;" title="Listen word">${icons.volume}</button>
+                                                <button class="word-mini-tts" data-word="Sakam, Leaves" style="background:none;border:none;cursor:pointer;color:#10b981;padding:0;" title="Listen word">${icons.volume}</button>
                                             </span>
-                                            <span class="badge" style="background: white; border: 1px solid var(--color-border); font-size: 0.75rem; padding: 4px 8px; display: inline-flex; align-items: center; gap: 6px;">
+                                            <span class="badge" style="background: var(--color-surface-alt); color: var(--color-text-main); border: 1px solid var(--color-border); font-size: 0.75rem; padding: 4px 8px; display: inline-flex; align-items: center; gap: 6px;">
                                                 <strong>Chando Marsal (ᱪᱟᱸᱫᱚ ᱢᱟᱨᱥᱟᱞ)</strong> = Sunlight
-                                                <button class="word-mini-tts" data-word="Chando Marsal, Sunlight" style="background:none;border:none;cursor:pointer;color:#16a34a;padding:0;" title="Listen word">${icons.volume}</button>
+                                                <button class="word-mini-tts" data-word="Chando Marsal, Sunlight" style="background:none;border:none;cursor:pointer;color:#10b981;padding:0;" title="Listen word">${icons.volume}</button>
                                             </span>
-                                            <span class="badge" style="background: white; border: 1px solid var(--color-border); font-size: 0.75rem; padding: 4px 8px; display: inline-flex; align-items: center; gap: 6px;">
+                                            <span class="badge" style="background: var(--color-surface-alt); color: var(--color-text-main); border: 1px solid var(--color-border); font-size: 0.75rem; padding: 4px 8px; display: inline-flex; align-items: center; gap: 6px;">
                                                 <strong>Jomak (ᱡᱚᱢᱟᱜ)</strong> = Food
-                                                <button class="word-mini-tts" data-word="Jomak, Food" style="background:none;border:none;cursor:pointer;color:#16a34a;padding:0;" title="Listen word">${icons.volume}</button>
+                                                <button class="word-mini-tts" data-word="Jomak, Food" style="background:none;border:none;cursor:pointer;color:#10b981;padding:0;" title="Listen word">${icons.volume}</button>
                                             </span>
                                         </div>
                                     </div>
@@ -317,9 +317,9 @@ export async function renderTranslate(container) {
                 // Update Vocabulary Pills
                 if (vocabPills && result.breakdown && result.breakdown.length > 0) {
                     vocabPills.innerHTML = result.breakdown.map(b => `
-                        <span class="badge" style="background: white; border: 1px solid var(--color-border); font-size: 0.75rem; padding: 4px 8px; display: inline-flex; align-items: center; gap: 6px;">
+                        <span class="badge" style="background: var(--color-surface-alt); color: var(--color-text-main); border: 1px solid var(--color-border); font-size: 0.75rem; padding: 4px 8px; display: inline-flex; align-items: center; gap: 6px;">
                             <strong>${b.word}</strong> = ${b.meaning}
-                            <button class="word-mini-tts" data-word="${b.word}, ${b.meaning}" style="background:none;border:none;cursor:pointer;color:#16a34a;padding:0;" title="Listen word">${icons.volume}</button>
+                            <button class="word-mini-tts" data-word="${b.word}, ${b.meaning}" style="background:none;border:none;cursor:pointer;color:#10b981;padding:0;" title="Listen word">${icons.volume}</button>
                         </span>
                     `).join('');
                     bindWordTTSButtons();

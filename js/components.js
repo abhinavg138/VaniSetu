@@ -22,8 +22,78 @@ export const icons = {
     calendar: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>`,
     waveform: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10v4"/><path d="M6 7v10"/><path d="M10 4v16"/><path d="M14 8v8"/><path d="M18 5v14"/><path d="M22 11v2"/></svg>`,
     micOff: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" x2="22" y1="2" y2="22"/><path d="M18.89 13.23A7.12 7.12 0 0 0 19 12v-2"/><path d="M5 10v2a7 7 0 0 0 12 5"/><path d="M15 9.34V5a3 3 0 0 0-5.68-1.33"/><path d="M9 9v3a3 3 0 0 0 5.12 2.12"/><line x1="12" x2="12" y1="19" y2="22"/></svg>`,
-    radio: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg>`
+    radio: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg>`,
+    moon: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>`,
+    sun: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>`
 };
+
+/* Theme Engine (Dark Mode / Light Mode) */
+export function getStoredTheme() {
+    try {
+        const saved = localStorage.getItem('vani_theme');
+        if (saved === 'dark' || saved === 'light') return saved;
+    } catch (e) {}
+    if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        return 'dark';
+    }
+    return 'light';
+}
+
+export function applyTheme(theme) {
+    const isDark = theme === 'dark';
+    if (typeof document !== 'undefined') {
+        if (isDark) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.body.classList.add('dark-mode');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            document.body.classList.remove('dark-mode');
+        }
+
+        // Update all toggle buttons on screen
+        document.querySelectorAll('.theme-toggle-btn').forEach(btn => {
+            btn.setAttribute('data-current-theme', theme);
+            btn.setAttribute('title', isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode');
+            const iconSpan = btn.querySelector('.theme-toggle-icon');
+            if (iconSpan) {
+                iconSpan.innerHTML = isDark ? icons.sun : icons.moon;
+            }
+            const labelSpan = btn.querySelector('.theme-toggle-label');
+            if (labelSpan) {
+                labelSpan.innerText = isDark ? 'Light' : 'Dark';
+            }
+        });
+    }
+    try {
+        localStorage.setItem('vani_theme', theme);
+    } catch (e) {}
+}
+
+export function toggleTheme() {
+    const current = getStoredTheme();
+    const next = current === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    showToast('Theme Changed', `Switched to ${next === 'dark' ? 'Dark' : 'Light'} Mode`, 'info');
+    return next;
+}
+
+export function initTheme() {
+    applyTheme(getStoredTheme());
+}
+
+// Auto-initialize theme on load
+if (typeof window !== 'undefined') {
+    initTheme();
+
+    // Global listener for theme toggling
+    document.addEventListener('click', (e) => {
+        const toggleBtn = e.target.closest('.theme-toggle-btn');
+        if (toggleBtn) {
+            e.preventDefault();
+            toggleTheme();
+        }
+    });
+}
 
 export function createSidebar(activeRoute = 'dashboard') {
     const navItems = [
@@ -48,24 +118,24 @@ export function createSidebar(activeRoute = 'dashboard') {
                     </div>
                 </a>
 
-                <div class="workspace-switcher" style="padding: 10px 12px; background: #f4f4f5; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+                <div class="workspace-switcher">
                     <div style="display: flex; align-items: center; gap: 8px;">
                         <span style="width: 8px; height: 8px; background: #10b981; border-radius: 50%;"></span>
                         <span style="font-size: 0.75rem; font-weight: 700; color: var(--color-text-main);">Teacher space</span>
                     </div>
-                    <span style="font-size: 0.65rem; background: #e2e8f0; padding: 2px 6px; border-radius: 4px; font-weight: 600; color: #475569;">Class 3-5</span>
+                    <span style="font-size: 0.65rem; background: var(--hover-bg); padding: 2px 6px; border-radius: 4px; font-weight: 600; color: var(--color-text-muted);">Class 3-5</span>
                 </div>
 
                 <nav class="sidebar-nav">
                     ${navItems.map(item => {
                         const isActive = activeRoute === item.id;
                         return `
-                            <a href="${item.href}" class="nav-item ${isActive ? 'active' : ''}" style="margin-bottom: 4px;">
+                            <a href="${item.href}" class="nav-item ${isActive ? 'active' : ''}">
                                 <div style="display: flex; align-items: center; gap: 12px;">
                                     ${item.icon}
                                     <span>${item.label}</span>
                                 </div>
-                                ${isActive ? `<span style="width: 6px; height: 6px; background: var(--color-primary); border-radius: 50%;"></span>` : (item.badge ? `<span style="font-size: 0.65rem; background: #fee2e2; color: #b91c1c; padding: 1px 6px; border-radius: 99px; font-weight: 700;">${item.badge}</span>` : '')}
+                                ${isActive ? `<span style="width: 6px; height: 6px; background: var(--color-primary); border-radius: 50%;"></span>` : (item.badge ? `<span style="font-size: 0.65rem; background: rgba(239, 68, 68, 0.15); color: #ef4444; padding: 1px 6px; border-radius: 99px; font-weight: 700;">${item.badge}</span>` : '')}
                             </a>
                         `;
                     }).join('')}
@@ -75,12 +145,12 @@ export function createSidebar(activeRoute = 'dashboard') {
             <div class="sidebar-bottom" style="border-top: 1px solid var(--color-border); padding-top: 16px;">
                 <div style="display: flex; align-items: center; justify-content: space-between;">
                     <div style="display: flex; align-items: center; gap: 8px;">
-                        <span style="width: 8px; height: 8px; background: #10b981; border-radius: 50%;"></span>
-                        <span style="font-size: 0.75rem; font-weight: 600;">SIH 2024 Demo</span>
+                        <span style="width: 7px; height: 7px; background: #10b981; border-radius: 50%;"></span>
+                        <span style="font-size: 0.75rem; font-weight: 600; color: var(--color-text-main);">SIH 2024 Demo</span>
                     </div>
                     <a href="#/setup" title="Re-open Onboarding" style="font-size: 0.7rem; color: var(--color-text-muted); text-decoration: underline;">Switch</a>
                 </div>
-                <p style="font-size: 0.7rem; color: var(--color-text-light); margin-top: 4px;">Santhali / Hindi / Bengali</p>
+                <p style="font-size: 0.7rem; color: var(--color-text-muted); margin-top: 4px;">Santhali / Hindi / Bengali</p>
             </div>
         </aside>
     `;
@@ -89,10 +159,12 @@ export function createSidebar(activeRoute = 'dashboard') {
 export function createHeader(user, breadcrumbs = ['Teacher workspace', 'Overview']) {
     const activeClass = api.getActiveClass();
     const classes = ['Class 3', 'Class 4', 'Class 5'];
+    const currentTheme = getStoredTheme();
+    const isDark = currentTheme === 'dark';
 
     return `
         <header class="top-header" id="app-top-header">
-            <div class="breadcrumbs" style="font-size: 0.875rem; color: var(--color-text-muted); display: flex; align-items: center; gap: 8px;">
+            <div class="breadcrumbs" style="font-size: 0.85rem; color: var(--color-text-muted); display: flex; align-items: center; gap: 8px;">
                 ${breadcrumbs.map((b, i) => {
                     const isLast = i === breadcrumbs.length - 1;
                     return `
@@ -102,9 +174,15 @@ export function createHeader(user, breadcrumbs = ['Teacher workspace', 'Overview
                 }).join('')}
             </div>
 
-            <div class="header-actions" style="display: flex; align-items: center; gap: 14px;">
+            <div class="header-actions" style="display: flex; align-items: center; gap: 12px;">
+                <!-- Dark Mode Toggle Button -->
+                <button class="theme-toggle-btn" id="header-theme-toggle" type="button" title="${isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}" aria-label="Toggle theme">
+                    <span class="theme-toggle-icon">${isDark ? icons.sun : icons.moon}</span>
+                    <span class="theme-toggle-label">${isDark ? 'Light' : 'Dark'}</span>
+                </button>
+
                 <!-- Class Switcher Controls -->
-                <div class="class-switcher-header" style="display: flex; align-items: center; background: #f1f5f9; padding: 3px; border-radius: var(--radius-full); border: 1px solid var(--color-border);">
+                <div class="class-switcher-header" style="display: flex; align-items: center; background: var(--color-surface-alt); padding: 3px; border-radius: var(--radius-full); border: 1px solid var(--color-border);">
                     <span style="font-size: 0.7rem; font-weight: 700; padding: 0 8px; color: var(--color-text-muted); text-transform: uppercase;">Class:</span>
                     ${classes.map(c => `
                         <button class="header-class-btn ${activeClass === c ? 'active' : ''}" data-class="${c}" style="font-size: 0.75rem; font-weight: 700; padding: 4px 12px; border-radius: var(--radius-full); transition: all 0.2s; ${activeClass === c ? 'background: var(--color-primary); color: white; box-shadow: 0 1px 3px rgba(0,0,0,0.15);' : 'color: var(--color-text-muted);'}">
@@ -113,11 +191,11 @@ export function createHeader(user, breadcrumbs = ['Teacher workspace', 'Overview
                     `).join('')}
                 </div>
 
-                <div class="status-indicator" style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: 600; color: #059669; background: #ecfdf5; padding: 4px 10px; border-radius: var(--radius-full);">
+                <div class="status-indicator" style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: 600; padding: 4px 10px; border-radius: var(--radius-full);">
                     <span class="dot" style="width: 6px; height: 6px; border-radius: 50%; background-color: #10b981;"></span> Online
                 </div>
 
-                <a href="#/profile" class="avatar" title="View Profile: ${user ? user.name : 'Teacher'}" style="width: 36px; height: 36px; border-radius: 50%; background: var(--color-primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; text-decoration: none;">
+                <a href="#/profile" class="avatar" title="View Profile: ${user ? user.name : 'Teacher'}" style="width: 34px; height: 34px; border-radius: 50%; background: var(--color-primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; text-decoration: none;">
                     ${user ? user.avatarInitials : 'MH'}
                 </a>
             </div>
@@ -145,11 +223,11 @@ export function createToolkitCard(item) {
     return `
         <a href="${item.href || '#'}" class="toolkit-card" data-action="${item.action || ''}" style="text-decoration: none; color: inherit;">
             <div class="flex items-center gap-3">
-                <div style="width: 48px; height: 48px; border-radius: 12px; background: ${item.color}; color: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <div style="width: 44px; height: 44px; border-radius: 12px; background: ${item.color}; color: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                     ${icons[item.icon] || ''}
                 </div>
                 <div>
-                    <h4 style="font-size: 0.875rem; font-weight: 700; margin-bottom: 2px;">${item.title}</h4>
+                    <h4 style="font-size: 0.875rem; font-weight: 700; margin-bottom: 2px; color: var(--color-text-main);">${item.title}</h4>
                     <p style="font-size: 0.75rem; color: var(--color-text-muted);">${item.desc}</p>
                 </div>
             </div>
@@ -165,7 +243,7 @@ export function createLessonItem(lesson) {
                 <span style="font-size: 0.75rem; font-weight: 600; color: var(--color-text-muted); width: 44px;">${lesson.time}</span>
                 <div style="width: 4px; height: 42px; border-radius: 4px; background: ${lesson.color};"></div>
                 <div>
-                    <h4 style="font-size: 0.875rem; font-weight: 700; margin-bottom: 2px;">${lesson.title}</h4>
+                    <h4 style="font-size: 0.875rem; font-weight: 700; margin-bottom: 2px; color: var(--color-text-main);">${lesson.title}</h4>
                     <p style="font-size: 0.75rem; color: var(--color-text-muted);">${lesson.subtitle}</p>
                     ${lesson.vernacularBridge ? `<p style="font-size: 0.7rem; color: var(--color-primary); font-weight: 600; margin-top: 2px;">✦ ${lesson.vernacularBridge}</p>` : ''}
                 </div>
@@ -197,11 +275,12 @@ export function showToast(title, message, type = 'success') {
     const accent = borderColors[type] || borderColors.success;
 
     toast.style.cssText = `
-        background: #ffffff;
+        background: var(--color-surface);
         color: var(--color-text-main);
         padding: 12px 18px;
         border-radius: var(--radius-md);
-        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.15), 0 8px 10px -6px rgba(0,0,0,0.1);
+        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2), 0 8px 10px -6px rgba(0,0,0,0.1);
+        border: 1px solid var(--color-border);
         border-left: 4px solid ${accent};
         min-width: 280px;
         max-width: 400px;
@@ -219,7 +298,7 @@ export function showToast(title, message, type = 'success') {
             <div style="font-size: 0.85rem; font-weight: 700; color: var(--color-text-main);">${title}</div>
             <div style="font-size: 0.75rem; color: var(--color-text-muted); margin-top: 2px;">${message}</div>
         </div>
-        <button class="toast-close" style="color: var(--color-text-light); font-size: 14px; padding: 2px;">✕</button>
+        <button class="toast-close" style="color: var(--color-text-light); font-size: 14px; padding: 2px; background: none; border: none; cursor: pointer;">✕</button>
     `;
 
     container.appendChild(toast);
@@ -237,7 +316,7 @@ export function showToast(title, message, type = 'success') {
     };
 
     toast.querySelector('.toast-close').addEventListener('click', close);
-    setTimeout(close, 4000);
+    setTimeout(close, 3500);
 }
 
 // Text-to-speech pronunciation engine
@@ -251,9 +330,7 @@ export function speakText(text, lang = 'hi-IN', options = {}) {
     try {
         window.speechSynthesis.cancel();
 
-        // Process text for crystal clear pronunciation:
-        // If text contains Roman phonetic transcription in parentheses (e.g. "(Dare sakam chando marsal...)")
-        // and has Ol Chiki characters, extract the Roman transcription for optimal speech synthesizer playback.
+        // Process text for crystal clear pronunciation
         let textToSpeak = text;
         const parenMatch = text.match(/\(([^)]+)\)/);
         const hasOlChiki = /[\u1C50-\u1C7F]/.test(text);

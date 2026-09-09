@@ -165,10 +165,10 @@ export async function renderAssessment(container) {
                                 <!-- Quick Topic Chips -->
                                 <div style="margin-bottom: 20px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
                                     <span style="font-size: 0.75rem; font-weight: 600; color: var(--color-text-muted);">Quick Topic Ideas:</span>
-                                    <button type="button" class="topic-chip" data-topic="Subtraction with market fruit stories" data-subject="Mathematics" style="background: #f1f5f9; padding: 4px 10px; border-radius: 99px; font-size: 0.75rem; color: var(--color-text-main);">Fruit Subtraction</button>
-                                    <button type="button" class="topic-chip" data-topic="Our Forest Trees and Animal Alert Calls" data-subject="Environmental Studies" style="background: #f1f5f9; padding: 4px 10px; border-radius: 99px; font-size: 0.75rem; color: var(--color-text-main);">Forest & Trees</button>
-                                    <button type="button" class="topic-chip" data-topic="How Plant Leaves make food with sunlight" data-subject="General Science" style="background: #f1f5f9; padding: 4px 10px; border-radius: 99px; font-size: 0.75rem; color: var(--color-text-main);">Plant Photosynthesis</button>
-                                    <button type="button" class="topic-chip" data-topic="Solar System: The Sun and 8 Orbiting Planets" data-subject="General Science" style="background: #f1f5f9; padding: 4px 10px; border-radius: 99px; font-size: 0.75rem; color: var(--color-text-main);">Solar System</button>
+                                    <button type="button" class="topic-chip" data-topic="Subtraction with market fruit stories" data-subject="Mathematics" style="background: var(--color-surface-alt); padding: 4px 10px; border-radius: 99px; font-size: 0.75rem; color: var(--color-text-main); border: 1px solid var(--color-border); cursor: pointer;">Fruit Subtraction</button>
+                                    <button type="button" class="topic-chip" data-topic="Our Forest Trees and Animal Alert Calls" data-subject="Environmental Studies" style="background: var(--color-surface-alt); padding: 4px 10px; border-radius: 99px; font-size: 0.75rem; color: var(--color-text-main); border: 1px solid var(--color-border); cursor: pointer;">Forest & Trees</button>
+                                    <button type="button" class="topic-chip" data-topic="How Plant Leaves make food with sunlight" data-subject="General Science" style="background: var(--color-surface-alt); padding: 4px 10px; border-radius: 99px; font-size: 0.75rem; color: var(--color-text-main); border: 1px solid var(--color-border); cursor: pointer;">Plant Photosynthesis</button>
+                                    <button type="button" class="topic-chip" data-topic="Solar System: The Sun and 8 Orbiting Planets" data-subject="General Science" style="background: var(--color-surface-alt); padding: 4px 10px; border-radius: 99px; font-size: 0.75rem; color: var(--color-text-main); border: 1px solid var(--color-border); cursor: pointer;">Solar System</button>
                                 </div>
 
                                 <div style="display: flex; justify-content: flex-end; gap: 12px;">
@@ -192,7 +192,7 @@ export async function renderAssessment(container) {
                                     <h3 style="font-size: 1.25rem; font-weight: 700;">Assigned Assessments for ${currentFilterClass}</h3>
                                 </div>
                                 <div style="display: flex; gap: 10px;">
-                                    <select id="subject-filter-select" style="padding: 6px 12px; border: 1px solid var(--color-border); border-radius: 8px; font-size: 0.8rem; font-weight: 600; background: white;">
+                                    <select id="subject-filter-select" style="padding: 6px 12px; border: 1px solid var(--color-border); border-radius: 8px; font-size: 0.8rem; font-weight: 600; background: var(--color-surface); color: var(--color-text-main); cursor: pointer;">
                                         <option value="All" ${currentFilterSubject === 'All' ? 'selected' : ''}>All Subjects</option>
                                         <option value="Mathematics" ${currentFilterSubject === 'Mathematics' ? 'selected' : ''}>Mathematics</option>
                                         <option value="Environmental Studies" ${currentFilterSubject === 'Environmental Studies' ? 'selected' : ''}>EVS</option>
@@ -423,9 +423,9 @@ function renderGeneratedAssessmentCard(item) {
                         </div>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
                             ${q.options.map((opt, oIdx) => `
-                                <div style="font-size: 0.8rem; padding: 8px 12px; border: 1px solid ${oIdx === q.correctIndex ? '#86efac' : 'var(--color-border)'}; background: ${oIdx === q.correctIndex ? '#f0fdf4' : 'white'}; border-radius: 6px; display: flex; align-items: center; justify-content: space-between;">
+                                <div style="font-size: 0.8rem; padding: 8px 12px; border: 1px solid ${oIdx === q.correctIndex ? '#10b981' : 'var(--color-border)'}; background: ${oIdx === q.correctIndex ? 'rgba(16, 185, 129, 0.12)' : 'var(--color-surface-alt)'}; color: var(--color-text-main); border-radius: 6px; display: flex; align-items: center; justify-content: space-between;">
                                     <span>${String.fromCharCode(65 + oIdx)}) ${opt}</span>
-                                    ${oIdx === q.correctIndex ? `<span style="font-size: 0.7rem; font-weight: 700; color: #15803d;">Correct Answer</span>` : ''}
+                                    ${oIdx === q.correctIndex ? `<span style="font-size: 0.7rem; font-weight: 700; color: #10b981;">Correct Answer</span>` : ''}
                                 </div>
                             `).join('')}
                         </div>
@@ -471,7 +471,7 @@ function openAssignModal(assessment, onSuccess) {
                         </div>
                         <h3 style="font-weight: 700; font-size: 1.15rem;">Assign to ${assessment.class}</h3>
                     </div>
-                    <button id="close-assign-modal" style="width: 32px; height: 32px; border-radius: 50%; background: #f1f5f9; display: flex; align-items: center; justify-content: center;">✕</button>
+                    <button id="close-assign-modal" style="width: 32px; height: 32px; border-radius: 50%; background: var(--color-surface-alt); color: var(--color-text-main); border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center; cursor: pointer;">✕</button>
                 </div>
 
                 <form id="confirm-assign-form" class="flex flex-col gap-4">
@@ -500,7 +500,7 @@ function openAssignModal(assessment, onSuccess) {
                         <textarea class="input-field" rows="2" id="assign-notes">Gidra ko, joto katha bes te bujhaw kate ol pe. Dare ar bir reak katha menak-a.</textarea>
                     </div>
 
-                    <div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 12px 16px; border-radius: var(--radius-md); font-size: 0.8rem; color: #166534;">
+                    <div style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3); padding: 12px 16px; border-radius: var(--radius-md); font-size: 0.8rem; color: var(--color-text-main);">
                         ✓ This will immediately distribute the assessment to the student portals for <strong>${assessment.class}</strong> and track live submissions.
                     </div>
 
@@ -563,7 +563,7 @@ function openReviewModal(item) {
                         <h3 style="font-weight: 700; font-size: 1.25rem; margin-top: 4px;">${item.title}</h3>
                         <p style="font-size: 0.75rem; color: var(--color-text-muted);">${item.submissionsCount || 24} of ${item.totalStudents || 28} Students Submitted · Average Score: ${item.averageScore || 84}%</p>
                     </div>
-                    <button id="close-review-modal" style="width: 32px; height: 32px; border-radius: 50%; background: #f1f5f9; display: flex; align-items: center; justify-content: center;">✕</button>
+                    <button id="close-review-modal" style="width: 32px; height: 32px; border-radius: 50%; background: var(--color-surface-alt); color: var(--color-text-main); border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center; cursor: pointer;">✕</button>
                 </div>
 
                 <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--color-text-muted); text-transform: uppercase; margin-bottom: 12px;">Student Submissions Overview</h4>
@@ -642,7 +642,7 @@ function openQuizPreviewModal(item) {
                         <span class="badge badge-coral">${item.class} Student View Preview</span>
                         <h3 style="font-weight: 800; font-size: 1.25rem; margin-top: 4px;">${item.title}</h3>
                     </div>
-                    <button id="close-quiz-preview" style="width: 32px; height: 32px; border-radius: 50%; background: #f1f5f9; display: flex; align-items: center; justify-content: center;">✕</button>
+                    <button id="close-quiz-preview" style="width: 32px; height: 32px; border-radius: 50%; background: var(--color-surface-alt); color: var(--color-text-main); border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center; cursor: pointer;">✕</button>
                 </div>
 
                 <div style="display: flex; flex-direction: column; gap: 16px;">
