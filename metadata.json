@@ -1,0 +1,6 @@
+{
+  "name": "Vani Setu",
+  "description": "Vernacular classroom learning, translation, and classwise assessment platform for multilingual education.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
