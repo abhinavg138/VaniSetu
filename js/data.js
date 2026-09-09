@@ -17,7 +17,7 @@ export const mockUser = {
     totalStudents: 84,
     assessmentsAssigned: 19,
     translationsMade: 342,
-    activeSince: 'August 2024'
+    activeSince: 'August 2026'
 };
 
 export const mockLessonsByClass = {

@@ -54,7 +54,7 @@ export async function renderProfile(container) {
                             <div class="card" style="padding: 18px;">
                                 <span style="font-size: 0.7rem; font-weight: 700; color: var(--color-text-muted); text-transform: uppercase;">Platform Journey</span>
                                 <div style="font-size: 1.25rem; font-weight: 800; color: #7c3aed; margin-top: 8px;">
-                                    SIH 2024
+                                    SIH 2026
                                 </div>
                                 <span style="font-size: 0.75rem; color: var(--color-text-muted);">Active since ${user.activeSince}</span>
                             </div>

@@ -10,7 +10,7 @@ export function renderOnboarding(container) {
                 </div>
                 
                 <div class="hero-content" style="margin: auto 0;">
-                    <span style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; color: var(--color-accent); text-transform: uppercase; margin-bottom: 16px; display: block;">SMART INDIA HACKATHON 2024</span>
+                    <span style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; color: var(--color-accent); text-transform: uppercase; margin-bottom: 16px; display: block;">SMART INDIA HACKATHON 2026</span>
                     <h1 class="heading-display" style="font-size: 3rem; margin-bottom: 24px; line-height: 1.1;">
                         Every child's voice<br>
                         <span class="text-gold">belongs in class.</span>

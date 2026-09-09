@@ -146,7 +146,7 @@ export function createSidebar(activeRoute = 'dashboard') {
                 <div style="display: flex; align-items: center; justify-content: space-between;">
                     <div style="display: flex; align-items: center; gap: 8px;">
                         <span style="width: 7px; height: 7px; background: #10b981; border-radius: 50%;"></span>
-                        <span style="font-size: 0.75rem; font-weight: 600; color: var(--color-text-main);">SIH 2024 Demo</span>
+                        <span style="font-size: 0.75rem; font-weight: 600; color: var(--color-text-main);">SIH 2026 Demo</span>
                     </div>
                     <a href="#/setup" title="Re-open Onboarding" style="font-size: 0.7rem; color: var(--color-text-muted); text-decoration: underline;">Switch</a>
                 </div>

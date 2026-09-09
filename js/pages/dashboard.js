@@ -31,7 +31,7 @@ export async function renderDashboard(container) {
                         <!-- Greeting Section -->
                         <section class="flex justify-between items-center mb-6">
                             <div>
-                                <span style="font-size: 0.7rem; font-weight: 700; color: var(--color-text-light); letter-spacing: 0.1em; text-transform: uppercase;">SMART INDIA HACKATHON · MULTILINGUAL HUB</span>
+                                <span style="font-size: 0.7rem; font-weight: 700; color: var(--color-text-light); letter-spacing: 0.1em; text-transform: uppercase;">SMART INDIA HACKATHON 2026 · MULTILINGUAL HUB</span>
                                 <h2 class="heading-display" style="font-size: 2.25rem; display: flex; align-items: center; gap: 8px;">
                                     Good morning, ${user.name.split(' ')[0]} <span style="color: var(--color-primary);">✦</span>
                                 </h2>
