@@ -145,9 +145,12 @@ export async function renderStudents(container) {
                                                     ${s.assessmentsCompleted} completed
                                                 </span>
                                             </td>
-                                            <td style="text-align: right;">
+                                            <td style="text-align: right; white-space: nowrap;">
                                                 <button class="view-student-profile-btn" data-id="${s.id}" style="padding: 6px 12px; background: var(--color-surface-alt); border-radius: 6px; font-size: 0.75rem; font-weight: 700; color: var(--color-primary);">
-                                                    View Profile
+                                                    Profile
+                                                </button>
+                                                <button class="launch-student-desk-btn" data-id="${s.id}" title="Simulate / Open Student Desk as ${s.name}" style="padding: 6px 10px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 6px; font-size: 0.75rem; font-weight: 700; color: #059669; margin-left: 6px; cursor: pointer;">
+                                                    Desk 🎒
                                                 </button>
                                             </td>
                                         </tr>
@@ -211,6 +214,20 @@ export async function renderStudents(container) {
                 const sId = e.currentTarget.getAttribute('data-id');
                 const student = (await api.getStudents('All')).find(s => s.id === sId);
                 openStudentDetailModal(student);
+            });
+        });
+
+        // Launch Student Desk Button
+        container.querySelectorAll('.launch-student-desk-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                const sId = e.currentTarget.getAttribute('data-id');
+                const student = (await api.getStudents('All')).find(s => s.id === sId);
+                if (student) {
+                    api.setCurrentStudent(student);
+                    api.setRole('Student');
+                    showToast('Switching Workspace', `Switched to ${student.name}'s Student Desk`, 'info');
+                    window.location.hash = '#/student';
+                }
             });
         });
     }
@@ -329,6 +346,9 @@ function openStudentDetailModal(student) {
                 </div>
 
                 <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                    <button id="modal-open-student-desk" class="role-btn" style="padding: 10px 16px; font-size: 0.85rem; color: #059669; border-color: rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.08); font-weight: 700; cursor: pointer;">
+                        Open Student Desk 🎒
+                    </button>
                     <a href="#/assessment" class="btn-primary" style="padding: 10px 18px; font-size: 0.85rem;">
                         Assign Targeted Assessment
                     </a>
@@ -339,4 +359,10 @@ function openStudentDetailModal(student) {
 
     const close = () => { modalRoot.innerHTML = ''; };
     document.getElementById('close-student-detail').addEventListener('click', close);
+    document.getElementById('modal-open-student-desk').addEventListener('click', () => {
+        api.setCurrentStudent(student);
+        api.setRole('Student');
+        close();
+        window.location.hash = '#/student';
+    });
 }

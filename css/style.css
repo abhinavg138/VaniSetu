@@ -156,6 +156,7 @@ input, select, textarea {
   justify-content: center;
   padding: 40px 60px;
   overflow-y: auto;
+  max-height: 100vh;
 }
 
 /* Dashboard Shell */
@@ -715,3 +716,80 @@ select option {
   border-color: #ef4444;
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
 }
+
+/* Student Panel Dedicated Styles */
+.student-tabs-nav {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.student-tabs-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.student-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.student-tab-btn:hover {
+  background: var(--hover-bg);
+  color: var(--color-text-main);
+}
+
+.student-tab-btn.active {
+  background: #10b981;
+  color: white;
+  border-color: #059669;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+}
+
+.doubt-suggestion-chip {
+  padding: 6px 12px;
+  border-radius: 99px;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-main);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.doubt-suggestion-chip:hover {
+  background: #10b981;
+  color: white;
+  border-color: #10b981;
+}
+
+.quiz-option-card:hover {
+  border-color: #10b981 !important;
+}
+
+.vocab-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+  border-color: #10b981 !important;
+}
+
+.game-btn {
+  transition: all 0.18s ease;
+}
+.game-btn.active {
+  border-color: #3b82f6 !important;
+  background: rgba(59, 130, 246, 0.1) !important;
+  color: #2563eb !important;
+}
+

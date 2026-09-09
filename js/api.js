@@ -17,6 +17,69 @@ let userState = { ...mockUser };
 let assessmentsStore = JSON.parse(localStorage.getItem('vani_assessments')) || [...initialAssessments];
 let studentsStore = JSON.parse(localStorage.getItem('vani_students')) || [...mockStudents];
 let vocabStore = JSON.parse(localStorage.getItem('vani_vocab')) || { ...mockVocabularyByClass };
+let currentRole = localStorage.getItem('vani_role') || 'Teacher';
+let currentStudent = JSON.parse(localStorage.getItem('vani_active_student')) || { ...studentsStore[0] };
+
+const defaultSubmissions = [
+    {
+        id: 'sub-1',
+        assessmentId: 'asm-301',
+        studentId: 's301',
+        studentName: 'Babu Soren',
+        roll: '01',
+        class: 'Class 3',
+        motherTongue: 'Santhali',
+        score: 90,
+        scoreFraction: '4/4',
+        submittedAt: '07 Sep 2026, 10:15 AM',
+        usedVernacularBridge: 'Ol Chiki audio assisted',
+        feedback: 'Bes te bujhaw kate ol pe! Great job on fruit subtraction story.'
+    },
+    {
+        id: 'sub-2',
+        assessmentId: 'asm-302',
+        studentId: 's301',
+        studentName: 'Babu Soren',
+        roll: '01',
+        class: 'Class 3',
+        motherTongue: 'Santhali',
+        score: 100,
+        scoreFraction: '3/3',
+        submittedAt: '08 Sep 2026, 02:30 PM',
+        usedVernacularBridge: 'Santhali tree vocabulary bridge',
+        feedback: 'Excellent knowledge of local birds and alarm calls!'
+    },
+    {
+        id: 'sub-3',
+        assessmentId: 'asm-301',
+        studentId: 's302',
+        studentName: 'Pooja Murmu',
+        roll: '04',
+        class: 'Class 3',
+        motherTongue: 'Santhali',
+        score: 100,
+        scoreFraction: '4/4',
+        submittedAt: '07 Sep 2026, 11:00 AM',
+        usedVernacularBridge: 'Independent (Fluent)',
+        feedback: 'Perfect score with quick mental subtraction.'
+    },
+    {
+        id: 'sub-4',
+        assessmentId: 'asm-301',
+        studentId: 's303',
+        studentName: 'Rohan Bauri',
+        roll: '09',
+        class: 'Class 3',
+        motherTongue: 'Bengali',
+        score: 75,
+        scoreFraction: '3/4',
+        submittedAt: '07 Sep 2026, 01:20 PM',
+        usedVernacularBridge: 'Bengali translation support',
+        feedback: 'Good progress, practice more subtraction stories.'
+    }
+];
+
+let submissionsStore = JSON.parse(localStorage.getItem('vani_submissions')) || defaultSubmissions;
 
 // Translation dictionary simulation
 const translationDictionary = {
@@ -43,6 +106,30 @@ const translationDictionary = {
 };
 
 export const api = {
+    // Role selection (Teacher vs Student)
+    getRole: () => currentRole,
+    setRole: (newRole) => {
+        currentRole = newRole;
+        localStorage.setItem('vani_role', newRole);
+        window.dispatchEvent(new CustomEvent('vani:role-changed', { detail: { role: newRole } }));
+        return currentRole;
+    },
+
+    // Active Student in Student Panel
+    getCurrentStudent: () => {
+        return currentStudent || studentsStore[0];
+    },
+    setCurrentStudent: (student) => {
+        currentStudent = { ...student };
+        localStorage.setItem('vani_active_student', JSON.stringify(currentStudent));
+        if (student && student.class) {
+            activeClass = student.class;
+            localStorage.setItem('vani_active_class', student.class);
+        }
+        window.dispatchEvent(new CustomEvent('vani:student-changed', { detail: { student: currentStudent } }));
+        return currentStudent;
+    },
+
     // Current Class selection
     getActiveClass: () => activeClass,
     setActiveClass: (newClass) => {
@@ -208,6 +295,135 @@ export const api = {
             localStorage.setItem('vani_assessments', JSON.stringify(assessmentsStore));
             userState.assessmentsAssigned += 1;
             setTimeout(() => resolve(assigned), 250);
+        });
+    },
+
+    // Student Submissions & Assessment Taking
+    getSubmissions: () => submissionsStore,
+    getStudentSubmissions: (studentId) => {
+        return submissionsStore.filter(s => s.studentId === studentId);
+    },
+    getSubmissionsForAssessment: (assessmentId) => {
+        return submissionsStore.filter(s => s.assessmentId === assessmentId);
+    },
+    submitAssessment: async ({ assessmentId, studentId, studentName, roll, className, motherTongue, score, scoreFraction, answers, usedVernacularBridge }) => {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                const newSubmission = {
+                    id: 'sub-' + Date.now(),
+                    assessmentId,
+                    studentId,
+                    studentName: studentName || 'Student',
+                    roll: roll || '01',
+                    class: className || activeClass,
+                    motherTongue: motherTongue || 'Santhali',
+                    score: Math.round(score),
+                    scoreFraction: scoreFraction || `${Math.round(score / 25)}/4`,
+                    submittedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ', ' + new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }),
+                    usedVernacularBridge: usedVernacularBridge ? 'Ol Chiki vernacular audio supported' : 'Standard bilingual bridge',
+                    feedback: score >= 80 ? 'Adi bes! (Excellent understanding of concepts in native script)' : 'Bes koshish! (Good attempt, review vernacular bridge terms)',
+                    answers: answers || []
+                };
+
+                // Add or replace existing submission for this student on this assessment
+                const existingIdx = submissionsStore.findIndex(s => s.assessmentId === assessmentId && s.studentId === studentId);
+                if (existingIdx >= 0) {
+                    submissionsStore[existingIdx] = newSubmission;
+                } else {
+                    submissionsStore.unshift(newSubmission);
+                }
+                localStorage.setItem('vani_submissions', JSON.stringify(submissionsStore));
+
+                // Update assessment counts & average
+                const asm = assessmentsStore.find(a => a.id === assessmentId);
+                if (asm) {
+                    const asmSubs = submissionsStore.filter(s => s.assessmentId === assessmentId);
+                    asm.submissionsCount = asmSubs.length;
+                    const avg = Math.round(asmSubs.reduce((acc, curr) => acc + curr.score, 0) / asmSubs.length);
+                    asm.averageScore = avg;
+                    localStorage.setItem('vani_assessments', JSON.stringify(assessmentsStore));
+                }
+
+                // Update student stats
+                const std = studentsStore.find(s => s.id === studentId);
+                if (std) {
+                    std.assessmentsCompleted = (std.assessmentsCompleted || 0) + 1;
+                    std.comprehensionIndex = Math.min(99, Math.round(((std.comprehensionIndex || 80) * 0.7) + (score * 0.3)));
+                    localStorage.setItem('vani_students', JSON.stringify(studentsStore));
+                }
+
+                resolve(newSubmission);
+            }, 300);
+        });
+    },
+
+    // Student AI Vernacular Doubt Companion
+    answerStudentDoubt: async ({ question, studentLanguage = 'Santhali', className = 'Class 3' }) => {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                const q = (question || '').toLowerCase();
+                let answer = '';
+                let vernacularAudioText = '';
+                let scriptDisplay = '';
+                let vocabulary = [];
+
+                if (q.includes('photo') || q.includes('पत्त') || q.includes('leaf') || q.includes('धूप') || q.includes('खाद्य') || q.includes('खाना') || q.includes('food')) {
+                    answer = 'पेड़ के हरे पत्ते सूरज की धूप (Chando marsal), पानी (Dah) और हवा से पेड़ के लिए भोजन बनाते हैं। पत्तों में हरा रंग (Chlorophyll) होता है जो धूप को पकड़ता है।';
+                    vernacularAudioText = 'Dare sakam do chando marsal ar daah te aakowak jomak ko toiri-a. Sakam re hariyar rong thiko-a.';
+                    scriptDisplay = 'ᱫᱟᱨᱮ ᱥᱟᱠᱟᱢ ᱫᱚ ᱪᱟᱸᱫᱚ ᱢᱟᱨᱥᱟᱞ ᱟᱨ ᱫᱟᱜ ᱛᱮ ᱡᱚᱢᱟᱜ ᱮ ᱛᱮᱭᱟᱨ-ᱟ (Dare sakam chando marsal ar dah te jomak toiri)';
+                    vocabulary = [
+                        { word: 'Dare (ᱫᱟᱨᱮ)', meaning: 'Tree / पेड़' },
+                        { word: 'Sakam (ᱥᱟᱠᱟᱢ)', meaning: 'Leaves / पत्ते' },
+                        { word: 'Chando marsal (ᱪᱟᱸᱫᱚ ᱢᱟᱨᱥᱟᱞ)', meaning: 'Sunlight / धूप' },
+                        { word: 'Jomak (ᱡᱚᱢᱟᱜ)', meaning: 'Food / भोजन' }
+                    ];
+                } else if (q.includes('subtract') || q.includes('घटा') || q.includes('minus') || q.includes('आम') || q.includes('बांट') || q.includes('कम')) {
+                    answer = 'घटाना (Bhegar) का मतलब होता है कुल चीजों में से कुछ कम करना या बांटना। जैसे यदि 12 आम हैं और 5 खा लिए, तो 12 - 5 = 7 आम बचेंगे।';
+                    vernacularAudioText = 'Bhegar lekha te do joto jinis khon thora kom-a. 12 khon 5 bhegar kate 7 sarej-a.';
+                    scriptDisplay = 'ᱵᱷᱮᱜᱟᱨ ᱞᱮᱠᱷᱟ ᱫᱚ ᱡᱚᱛᱚ ᱠᱷᱚᱱ ᱠᱚᱢ ᱠᱟᱛᱮ ᱥᱟᱨᱮᱡ ᱞᱮᱠᱷᱟ (Bhegar / Saréj hisab)';
+                    vocabulary = [
+                        { word: 'Bhegar (ᱵᱷᱮᱜᱟᱨ)', meaning: 'Subtract / घटाना' },
+                        { word: 'Saréj (ᱥᱟᱨᱮᱡ)', meaning: 'Remaining / शेष' },
+                        { word: 'Lekha (ᱞᱮᱠᱷᱟ)', meaning: 'Count / गिनती' }
+                    ];
+                } else if (q.includes('solar') || q.includes('सूरज') || q.includes('ग्रह') || q.includes('planet') || q.includes('चांद')) {
+                    answer = 'हमारे सौरमंडल के केंद्र में सूरज (Chando) है और उसके चारों ओर 8 ग्रह चक्कर लगाते हैं। हमारी पृथ्वी तीसरा ग्रह है जिस पर हम रहते हैं।';
+                    vernacularAudioText = 'Chando mondol re 8 gotang graho do chando aachur kate ko bihur-a. Aboa dharti do tesra graho kana.';
+                    scriptDisplay = 'ᱪᱟᱸᱫᱚ ᱢᱚᱱᱰᱚᱞ ᱨᱮ ᱘ ᱜᱚᱴᱟᱝ ᱜᱽᱨᱟᱦᱚ ᱢᱮᱱᱟᱜ-ᱟ (Chando Mondol ar 8 Graho)';
+                    vocabulary = [
+                        { word: 'Chando (ᱪᱟᱸᱫᱚ)', meaning: 'Sun / सूरज' },
+                        { word: 'Dharti (ᱫᱷᱟᱹᱨᱛᱤ)', meaning: 'Earth / पृथ्वी' },
+                        { word: 'Graho (ᱜᱽᱨᱟᱦᱚ)', meaning: 'Planet / ग्रह' }
+                    ];
+                } else if (q.includes('water') || q.includes('पानी') || q.includes('river') || q.includes('नदी') || q.includes('dah')) {
+                    answer = 'पानी हमारे जीवन की सबसे अनमोल चीज है। नदी और कुएं का साफ पानी पीना चाहिए। धूप से पानी भाप (Dhuka) बनता है और आसमान में बादल (Remil) बनकर बारिश करता है।';
+                    vernacularAudioText = 'Daah do jibon re adi daman kana. Gada ar kuyan daah sapha doho dorkar. Daah seetong te dhuka ban kate remil re badlak-a.';
+                    scriptDisplay = 'ᱫᱟᱜ ᱫᱚ ᱡᱤᱭᱚᱱ ᱨᱮ ᱟᱹᱰᱤ ᱫᱟᱢᱟᱱ ᱠᱟᱱᱟ (Dah do jibon re adi daman)';
+                    vocabulary = [
+                        { word: 'Dah (ᱫᱟᱜ)', meaning: 'Water / पानी' },
+                        { word: 'Dhuka (ᱫᱷᱩᱠᱟ)', meaning: 'Vapor / भाप' },
+                        { word: 'Remil (ᱨᱤᱢᱤᱞ)', meaning: 'Cloud / बादल' }
+                    ];
+                } else {
+                    answer = `शानदार प्रश्न! कक्षा ${className} के लिए: इस विषय को अपनी मातृभाषा में याद रखना बहुत आसान है। अपने शिक्षक से भी कक्षा में पूछें और रोज़ अभ्यास करें।`;
+                    vernacularAudioText = 'Adi bhalai kuli! Nawa katha do aam jahar poriwar ar school re bes te bujhaw pe.';
+                    scriptDisplay = 'ᱟᱹᱰᱤ ᱱᱟᱯᱟᱭ ᱠᱩᱠᱞᱤ! ᱵᱮᱥ ᱛᱮ ᱯᱟᱲᱦᱟᱣ ᱢᱮ (Adi napay kukli! Learn well)';
+                    vocabulary = [
+                        { word: 'Kukli (ᱠᱩᱠᱞᱤ)', meaning: 'Question / सवाल' },
+                        { word: 'Cheda (ᱪᱮᱫᱚᱜ)', meaning: 'Learn / सीखना' },
+                        { word: 'Gidra (ᱜᱤᱫᱽᱨᱟᱹ)', meaning: 'Child / विद्यार्थी' }
+                    ];
+                }
+
+                resolve({
+                    question,
+                    answer,
+                    vernacularAudioText,
+                    scriptDisplay,
+                    vocabulary,
+                    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                });
+            }, 350);
         });
     },
 

@@ -19,14 +19,19 @@
 @media (max-width: 768px) {
   .split-layout {
     flex-direction: column;
+    overflow-y: auto;
+    height: auto;
+    min-height: 100vh;
   }
   .hero-banner {
     flex: none;
     padding: 32px 24px;
-    min-height: 240px;
+    min-height: auto;
   }
   .form-panel {
-    padding: 32px 24px;
+    padding: 32px 20px;
+    max-height: none;
+    height: auto;
   }
   
   .sidebar {

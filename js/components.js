@@ -24,7 +24,8 @@ export const icons = {
     micOff: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" x2="22" y1="2" y2="22"/><path d="M18.89 13.23A7.12 7.12 0 0 0 19 12v-2"/><path d="M5 10v2a7 7 0 0 0 12 5"/><path d="M15 9.34V5a3 3 0 0 0-5.68-1.33"/><path d="M9 9v3a3 3 0 0 0 5.12 2.12"/><line x1="12" x2="12" y1="19" y2="22"/></svg>`,
     radio: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg>`,
     moon: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>`,
-    sun: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>`
+    sun: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>`,
+    logout: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>`
 };
 
 /* Theme Engine (Dark Mode / Light Mode) */
@@ -95,13 +96,87 @@ if (typeof window !== 'undefined') {
     });
 }
 
-export function createSidebar(activeRoute = 'dashboard') {
+export function createSidebar(activeRoute = 'dashboard', forcedRole = null) {
+    const role = forcedRole || api.getRole() || 'Teacher';
+    const isStudent = role === 'Student' || activeRoute === 'student';
+
+    if (isStudent) {
+        const student = api.getCurrentStudent();
+        const hash = window.location.hash;
+        const currentTab = hash.includes('tab=') ? hash.split('tab=')[1].split('&')[0] : 'desk';
+
+        const studentNav = [
+            { id: 'desk', href: '#/student?tab=desk', label: 'My Desk', icon: icons.dashboard },
+            { id: 'quizzes', href: '#/student?tab=quizzes', label: 'Quizzes & Tests', icon: icons.clipboard, badge: 'Tests' },
+            { id: 'vocab', href: '#/student?tab=vocab', label: 'Vernacular Words', icon: icons.book },
+            { id: 'ask', href: '#/student?tab=ask', label: 'Ask AI Tutor', icon: icons.bulb },
+            { id: 'game', href: '#/student?tab=game', label: 'Word Match Game', icon: icons.waveform },
+            { id: 'badges', href: '#/student?tab=badges', label: 'My Badges', icon: icons.sparkles }
+        ];
+
+        return `
+            <aside class="sidebar" id="app-sidebar">
+                <div class="sidebar-top">
+                    <a href="#/student" class="brand-logo mb-6 px-2" style="display: flex; text-decoration: none;">
+                        <div class="logo-box" style="background: #059669;">
+                            ${icons.translate}
+                        </div>
+                        <div class="logo-text">
+                            <h1>Vani Setu</h1>
+                            <p>ᱜᱤᱫᱽᱨᱟᱹ ᱠᱚᱣᱟᱜ ᱚᱲᱟᱜ · Student</p>
+                        </div>
+                    </a>
+
+                    <div class="workspace-switcher" style="border-left: 3px solid #10b981;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="width: 8px; height: 8px; background: #10b981; border-radius: 50%;"></span>
+                            <span style="font-size: 0.75rem; font-weight: 700; color: var(--color-text-main);">Student: ${student.name.split(' ')[0]}</span>
+                        </div>
+                        <span style="font-size: 0.65rem; background: var(--hover-bg); padding: 2px 6px; border-radius: 4px; font-weight: 600; color: var(--color-text-muted);">${student.class}</span>
+                    </div>
+
+                    <nav class="sidebar-nav">
+                        ${studentNav.map(item => {
+                            const isActive = activeRoute === 'student' && currentTab === item.id;
+                            return `
+                                <a href="${item.href}" class="nav-item ${isActive ? 'active' : ''}">
+                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                        ${item.icon}
+                                        <span>${item.label}</span>
+                                    </div>
+                                    ${isActive ? `<span style="width: 6px; height: 6px; background: #10b981; border-radius: 50%;"></span>` : (item.badge ? `<span style="font-size: 0.65rem; background: rgba(16, 185, 129, 0.15); color: #059669; padding: 1px 6px; border-radius: 99px; font-weight: 700;">${item.badge}</span>` : '')}
+                                </a>
+                            `;
+                        }).join('')}
+                    </nav>
+                </div>
+                
+                <div class="sidebar-bottom" style="border-top: 1px solid var(--color-border); padding-top: 16px;">
+                    <a href="#/dashboard" class="role-btn" style="width: 100%; padding: 8px 12px; font-size: 0.75rem; font-weight: 700; text-decoration: none; justify-content: center; margin-bottom: 8px; color: #059669; border-color: rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.08);">
+                        👩‍🏫 Switch to Teacher Space
+                    </a>
+                    <a href="#/login" class="role-btn" style="width: 100%; padding: 8px 12px; font-size: 0.75rem; font-weight: 700; text-decoration: none; justify-content: center; margin-bottom: 12px; color: var(--color-text-muted); border-color: var(--color-border); background: var(--color-surface-alt);">
+                        ${icons.logout} Logout / Switch Login
+                    </a>
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="width: 7px; height: 7px; background: #10b981; border-radius: 50%;"></span>
+                            <span style="font-size: 0.75rem; font-weight: 600; color: var(--color-text-main);">SIH 2026 Student Panel</span>
+                        </div>
+                        <a href="#/login" title="Return to Login" style="font-size: 0.7rem; color: var(--color-text-muted); text-decoration: underline;">Logout</a>
+                    </div>
+                </div>
+            </aside>
+        `;
+    }
+
     const navItems = [
         { id: 'dashboard', href: '#/dashboard', label: 'Dashboard', icon: icons.dashboard },
         { id: 'translate', href: '#/translate', label: 'Translate', icon: icons.translate },
         { id: 'learn', href: '#/learn', label: 'Learn', icon: icons.book },
         { id: 'assessment', href: '#/assessment', label: 'Assessment', icon: icons.clipboard, badge: 'Generator' },
         { id: 'students', href: '#/students', label: 'Students', icon: icons.users },
+        { id: 'student', href: '#/student', label: 'Student Panel', icon: icons.sparkles, badge: 'Active' },
         { id: 'profile', href: '#/profile', label: 'Profile', icon: icons.profile }
     ];
 
@@ -123,7 +198,9 @@ export function createSidebar(activeRoute = 'dashboard') {
                         <span style="width: 8px; height: 8px; background: #10b981; border-radius: 50%;"></span>
                         <span style="font-size: 0.75rem; font-weight: 700; color: var(--color-text-main);">Teacher space</span>
                     </div>
-                    <span style="font-size: 0.65rem; background: var(--hover-bg); padding: 2px 6px; border-radius: 4px; font-weight: 600; color: var(--color-text-muted);">Class 3-5</span>
+                    <a href="#/student" style="font-size: 0.65rem; background: var(--color-primary-light); color: var(--color-primary); padding: 2px 8px; border-radius: 4px; font-weight: 700; text-decoration: none;" title="Test as Student">
+                        Student View ↗
+                    </a>
                 </div>
 
                 <nav class="sidebar-nav">
@@ -135,7 +212,7 @@ export function createSidebar(activeRoute = 'dashboard') {
                                     ${item.icon}
                                     <span>${item.label}</span>
                                 </div>
-                                ${isActive ? `<span style="width: 6px; height: 6px; background: var(--color-primary); border-radius: 50%;"></span>` : (item.badge ? `<span style="font-size: 0.65rem; background: rgba(239, 68, 68, 0.15); color: #ef4444; padding: 1px 6px; border-radius: 99px; font-weight: 700;">${item.badge}</span>` : '')}
+                                ${isActive ? `<span style="width: 6px; height: 6px; background: var(--color-primary); border-radius: 50%;"></span>` : (item.badge ? `<span style="font-size: 0.65rem; background: ${item.id === 'student' ? 'rgba(16, 185, 129, 0.15); color: #10b981;' : 'rgba(239, 68, 68, 0.15); color: #ef4444;'} padding: 1px 6px; border-radius: 99px; font-weight: 700;">${item.badge}</span>` : '')}
                             </a>
                         `;
                     }).join('')}
@@ -143,12 +220,15 @@ export function createSidebar(activeRoute = 'dashboard') {
             </div>
             
             <div class="sidebar-bottom" style="border-top: 1px solid var(--color-border); padding-top: 16px;">
+                <a href="#/login" class="role-btn" style="width: 100%; padding: 8px 12px; font-size: 0.75rem; font-weight: 700; text-decoration: none; justify-content: center; margin-bottom: 12px; color: var(--color-text-muted); border-color: var(--color-border); background: var(--color-surface-alt);">
+                    ${icons.logout} Logout / Switch Login
+                </a>
                 <div style="display: flex; align-items: center; justify-content: space-between;">
                     <div style="display: flex; align-items: center; gap: 8px;">
                         <span style="width: 7px; height: 7px; background: #10b981; border-radius: 50%;"></span>
                         <span style="font-size: 0.75rem; font-weight: 600; color: var(--color-text-main);">SIH 2026 Demo</span>
                     </div>
-                    <a href="#/setup" title="Re-open Onboarding" style="font-size: 0.7rem; color: var(--color-text-muted); text-decoration: underline;">Switch</a>
+                    <a href="#/login" title="Return to Login" style="font-size: 0.7rem; color: var(--color-text-muted); text-decoration: underline;">Logout</a>
                 </div>
                 <p style="font-size: 0.7rem; color: var(--color-text-muted); margin-top: 4px;">Santhali / Hindi / Bengali</p>
             </div>
@@ -156,7 +236,10 @@ export function createSidebar(activeRoute = 'dashboard') {
     `;
 }
 
-export function createHeader(user, breadcrumbs = ['Teacher workspace', 'Overview']) {
+export function createHeader(user, breadcrumbs = ['Teacher workspace', 'Overview'], forcedRole = null) {
+    const role = forcedRole || api.getRole() || 'Teacher';
+    const isStudent = role === 'Student';
+    const currentStudent = isStudent ? api.getCurrentStudent() : null;
     const activeClass = api.getActiveClass();
     const classes = ['Class 3', 'Class 4', 'Class 5'];
     const currentTheme = getStoredTheme();
@@ -181,22 +264,43 @@ export function createHeader(user, breadcrumbs = ['Teacher workspace', 'Overview
                     <span class="theme-toggle-label">${isDark ? 'Light' : 'Dark'}</span>
                 </button>
 
-                <!-- Class Switcher Controls -->
-                <div class="class-switcher-header" style="display: flex; align-items: center; background: var(--color-surface-alt); padding: 3px; border-radius: var(--radius-full); border: 1px solid var(--color-border);">
-                    <span style="font-size: 0.7rem; font-weight: 700; padding: 0 8px; color: var(--color-text-muted); text-transform: uppercase;">Class:</span>
-                    ${classes.map(c => `
-                        <button class="header-class-btn ${activeClass === c ? 'active' : ''}" data-class="${c}" style="font-size: 0.75rem; font-weight: 700; padding: 4px 12px; border-radius: var(--radius-full); transition: all 0.2s; ${activeClass === c ? 'background: var(--color-primary); color: white; box-shadow: 0 1px 3px rgba(0,0,0,0.15);' : 'color: var(--color-text-muted);'}">
-                            ${c}
-                        </button>
-                    `).join('')}
-                </div>
+                ${isStudent ? `
+                    <!-- Student Mode Switcher Pill -->
+                    <div style="display: flex; align-items: center; gap: 8px; background: var(--color-surface-alt); padding: 4px 10px; border-radius: var(--radius-full); border: 1px solid var(--color-border); font-size: 0.75rem;">
+                        <span style="font-weight: 700; color: #10b981;">🎒 Student Desk:</span>
+                        <span style="font-weight: 600; color: var(--color-text-main);">${currentStudent.name} (${currentStudent.class})</span>
+                    </div>
+
+                    <a href="#/dashboard" class="role-btn" style="padding: 4px 10px; font-size: 0.75rem; font-weight: 700; text-decoration: none; color: #059669; border-color: rgba(16, 185, 129, 0.4);">
+                        Teacher Space ↗
+                    </a>
+                ` : `
+                    <!-- Teacher Class Switcher Controls -->
+                    <div class="class-switcher-header" style="display: flex; align-items: center; background: var(--color-surface-alt); padding: 3px; border-radius: var(--radius-full); border: 1px solid var(--color-border);">
+                        <span style="font-size: 0.7rem; font-weight: 700; padding: 0 8px; color: var(--color-text-muted); text-transform: uppercase;">Class:</span>
+                        ${classes.map(c => `
+                            <button class="header-class-btn ${activeClass === c ? 'active' : ''}" data-class="${c}" style="font-size: 0.75rem; font-weight: 700; padding: 4px 12px; border-radius: var(--radius-full); transition: all 0.2s; ${activeClass === c ? 'background: var(--color-primary); color: white; box-shadow: 0 1px 3px rgba(0,0,0,0.15);' : 'color: var(--color-text-muted);'}">
+                                ${c}
+                            </button>
+                        `).join('')}
+                    </div>
+
+                    <a href="#/student" class="role-btn" style="padding: 4px 10px; font-size: 0.75rem; font-weight: 700; text-decoration: none; color: #10b981; border-color: rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.06);">
+                        Student Panel 🎒
+                    </a>
+                `}
 
                 <div class="status-indicator" style="display: flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: 600; padding: 4px 10px; border-radius: var(--radius-full);">
                     <span class="dot" style="width: 6px; height: 6px; border-radius: 50%; background-color: #10b981;"></span> Online
                 </div>
 
-                <a href="#/profile" class="avatar" title="View Profile: ${user ? user.name : 'Teacher'}" style="width: 34px; height: 34px; border-radius: 50%; background: var(--color-primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; text-decoration: none;">
-                    ${user ? user.avatarInitials : 'MH'}
+                <a href="${isStudent ? '#/student' : '#/profile'}" class="avatar" title="${isStudent ? `Student: ${currentStudent.name}` : `View Profile: ${user ? user.name : 'Teacher'}`}" style="width: 34px; height: 34px; border-radius: 50%; background: ${isStudent ? '#059669' : 'var(--color-primary)'}; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; text-decoration: none;">
+                    ${isStudent ? currentStudent.name.split(' ').map(n=>n[0]).join('') : (user ? user.avatarInitials : 'MH')}
+                </a>
+
+                <a href="#/login" class="theme-toggle-btn" title="Sign Out / Switch Login" style="padding: 6px 10px; font-size: 0.75rem; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+                    <span style="display: inline-flex; align-items: center;">${icons.logout}</span>
+                    <span>Logout</span>
                 </a>
             </div>
         </header>

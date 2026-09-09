@@ -6,7 +6,7 @@
     "dev": "serve . -p 3000",
     "build": "mkdir -p dist && cp -r index.html css js assets dist/",
     "start": "serve dist -p 3000",
-    "lint": "node -c js/app.js js/api.js js/data.js js/components.js js/router.js js/pages/setup.js js/pages/dashboard.js js/pages/translate.js js/pages/learn.js js/pages/assessment.js js/pages/students.js js/pages/profile.js"
+    "lint": "node -c js/app.js js/api.js js/data.js js/components.js js/router.js js/pages/login.js js/pages/setup.js js/pages/dashboard.js js/pages/translate.js js/pages/learn.js js/pages/assessment.js js/pages/students.js js/pages/profile.js js/pages/student.js"
   },
   "dependencies": {},
   "devDependencies": {

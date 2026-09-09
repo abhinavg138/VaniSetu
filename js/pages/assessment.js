@@ -554,19 +554,31 @@ function openAssignModal(assessment, onSuccess) {
 function openReviewModal(item) {
     if (!item) return;
     const modalRoot = document.getElementById('modal-root');
+    const dynamicSubmissions = api.getSubmissionsForAssessment(item.id);
+    const hasLiveSubs = dynamicSubmissions && dynamicSubmissions.length > 0;
+    const subsToRender = hasLiveSubs ? dynamicSubmissions : [
+        { studentName: 'Babu Soren', roll: '01', motherTongue: 'Santhali', score: 90, scoreFraction: '5/5', usedVernacularBridge: 'Ol Chiki audio assisted', status: 'Completed' },
+        { studentName: 'Pooja Murmu', roll: '04', motherTongue: 'Santhali', score: 100, scoreFraction: '5/5', usedVernacularBridge: 'None (Independent)', status: 'Completed' },
+        { studentName: 'Rohan Bauri', roll: '09', motherTongue: 'Bengali', score: 75, scoreFraction: '3/5', usedVernacularBridge: 'Hindi to Bengali translation', status: 'Needs Practice' },
+        { studentName: 'Sunita Hembram', roll: '12', motherTongue: 'Santhali', score: 85, scoreFraction: '4/5', usedVernacularBridge: 'Story prompt listened', status: 'Completed' }
+    ];
+
     modalRoot.innerHTML = `
         <div class="modal-overlay open" id="review-modal">
-            <div class="modal-box" style="max-width: 680px; max-height: 85vh; overflow-y: auto;">
+            <div class="modal-box" style="max-width: 720px; max-height: 85vh; overflow-y: auto;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--color-border);">
                     <div>
                         <span class="badge badge-emerald">${item.class} · ${item.subject}</span>
                         <h3 style="font-weight: 700; font-size: 1.25rem; margin-top: 4px;">${item.title}</h3>
-                        <p style="font-size: 0.75rem; color: var(--color-text-muted);">${item.submissionsCount || 24} of ${item.totalStudents || 28} Students Submitted · Average Score: ${item.averageScore || 84}%</p>
+                        <p style="font-size: 0.75rem; color: var(--color-text-muted);">${item.submissionsCount || subsToRender.length} of ${item.totalStudents || 28} Students Submitted · Average Score: ${item.averageScore || 84}%</p>
                     </div>
                     <button id="close-review-modal" style="width: 32px; height: 32px; border-radius: 50%; background: var(--color-surface-alt); color: var(--color-text-main); border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center; cursor: pointer;">✕</button>
                 </div>
 
-                <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--color-text-muted); text-transform: uppercase; margin-bottom: 12px;">Student Submissions Overview</h4>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--color-text-muted); text-transform: uppercase; margin: 0;">Student Submissions Overview</h4>
+                    ${hasLiveSubs ? `<span class="badge badge-emerald" style="font-size: 0.7rem;">Live Synchronized from Student Panel</span>` : ''}
+                </div>
                 <div class="table-container mb-4">
                     <table class="vani-table">
                         <thead>
@@ -575,38 +587,22 @@ function openReviewModal(item) {
                                 <th>Mother Tongue</th>
                                 <th>Score</th>
                                 <th>Vernacular Bridge Used</th>
-                                <th>Status</th>
+                                <th>Submitted At</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td><strong>Babu Soren (Roll 01)</strong></td>
-                                <td>Santhali</td>
-                                <td><span style="font-weight: 700; color: #059669;">90%</span> (5/5)</td>
-                                <td>Ol Chiki audio assisted</td>
-                                <td><span class="badge badge-emerald">Completed</span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Pooja Murmu (Roll 04)</strong></td>
-                                <td>Santhali</td>
-                                <td><span style="font-weight: 700; color: #059669;">100%</span> (5/5)</td>
-                                <td>None (Independent)</td>
-                                <td><span class="badge badge-emerald">Completed</span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Rohan Bauri (Roll 09)</strong></td>
-                                <td>Bengali</td>
-                                <td><span style="font-weight: 700; color: #d97706;">75%</span> (3/5)</td>
-                                <td>Hindi to Bengali translation</td>
-                                <td><span class="badge badge-amber">Needs Practice</span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Sunita Hembram (Roll 12)</strong></td>
-                                <td>Santhali</td>
-                                <td><span style="font-weight: 700; color: #059669;">85%</span> (4/5)</td>
-                                <td>Story prompt listened</td>
-                                <td><span class="badge badge-emerald">Completed</span></td>
-                            </tr>
+                            ${subsToRender.map(s => `
+                                <tr>
+                                    <td><strong>${s.studentName} (Roll ${s.roll || '01'})</strong></td>
+                                    <td>${s.motherTongue || 'Santhali'}</td>
+                                    <td>
+                                        <span style="font-weight: 700; color: ${s.score >= 80 ? '#059669' : '#d97706'};">${s.score}%</span> 
+                                        ${s.scoreFraction ? `(${s.scoreFraction})` : ''}
+                                    </td>
+                                    <td><span style="font-size: 0.8rem; color: var(--color-text-muted);">${s.usedVernacularBridge || 'Bilingual audio'}</span></td>
+                                    <td><span class="badge ${s.score >= 80 ? 'badge-emerald' : 'badge-amber'}">${s.submittedAt || 'Completed'}</span></td>
+                                </tr>
+                            `).join('')}
                         </tbody>
                     </table>
                 </div>

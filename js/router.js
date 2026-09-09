@@ -1,16 +1,21 @@
-import { renderOnboarding } from './pages/setup.js';
+import { renderLogin, renderOnboarding } from './pages/login.js';
 import { renderDashboard } from './pages/dashboard.js';
 import { renderTranslate } from './pages/translate.js';
 import { renderLearn } from './pages/learn.js';
 import { renderAssessment } from './pages/assessment.js';
 import { renderStudents } from './pages/students.js';
 import { renderProfile } from './pages/profile.js';
+import { renderStudentPanel } from './pages/student.js';
+import { api } from './api.js';
 
 const routes = {
-    '': renderDashboard,
-    '#/': renderDashboard,
-    '#/setup': renderOnboarding,
+    '': renderLogin,
+    '#/': renderLogin,
+    '#/login': renderLogin,
+    '#/setup': renderLogin,
     '#/dashboard': renderDashboard,
+    '#/student': renderStudentPanel,
+    '#/student-dashboard': renderStudentPanel,
     '#/translate': renderTranslate,
     '#/learn': renderLearn,
     '#/lessons': renderLearn,
@@ -37,7 +42,16 @@ async function handleRoute() {
         modalRoot.innerHTML = '';
     }
 
-    const renderFunc = routes[hash] || routes['#/dashboard'];
+    let renderFunc = routes[hash];
+    
+    // If no route specified or landing, default to Login page
+    if (!renderFunc) {
+        if (!hash || hash === '#/' || hash === '#' || hash === '') {
+            renderFunc = renderLogin;
+        } else {
+            renderFunc = renderDashboard;
+        }
+    }
     
     try {
         await renderFunc(appRoot);
@@ -47,8 +61,8 @@ async function handleRoute() {
             <div style="padding: 60px; text-align: center;">
                 <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 8px;">Error loading page</h3>
                 <p style="color: #64748b; margin-bottom: 20px;">${e.message || 'An unexpected error occurred.'}</p>
-                <a href="#/dashboard" class="btn-primary" style="display: inline-block; text-decoration: none; padding: 10px 20px;">
-                    Return to Dashboard
+                <a href="#/login" class="btn-primary" style="display: inline-block; text-decoration: none; padding: 10px 20px;">
+                    Return to Login
                 </a>
             </div>
         `;
